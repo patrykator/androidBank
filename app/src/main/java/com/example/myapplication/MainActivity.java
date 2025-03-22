@@ -228,7 +228,6 @@ public class MainActivity extends AppCompatActivity {
             params.height = actionBarHeight + insets.top;
             toolbar.setLayoutParams(params);
 
-            findViewById(R.id.bottomNavigation).setPadding(0, 0, 0, insets.bottom);
 
             v.setPadding(0, 0, 0, 0);
 
