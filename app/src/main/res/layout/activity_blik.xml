@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F5F5F5">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/blikToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/design_default_color_primary"
+        android:elevation="4dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:navigationIcon="@android:drawable/ic_menu_close_clear_cancel"
+        app:title="Kod BLIK"
+        app:titleTextAppearance="@style/TextAppearance.AppCompat.Medium"
+        app:titleTextColor="@android:color/white" />
+
+    <FrameLayout
+        android:id="@+id/circleContainer"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="48dp"
+        android:layout_marginEnd="32dp"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/blikToolbar">
+
+        <ProgressBar
+            android:id="@+id/circleProgress"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:indeterminate="false"
+            android:max="100"
+            android:progress="100"
+            android:progressDrawable="@drawable/circle_progress_drawable"
+            android:rotation="-90" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="40dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Twój kod BLIK"
+                android:textColor="#757575"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/blikCodeTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:letterSpacing="0.1"
+                android:textColor="#212121"
+                android:textSize="40sp"
+                android:textStyle="bold"
+                tools:text="123456" />
+
+            <TextView
+                android:id="@+id/timerTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:textColor="@color/design_default_color_primary"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                tools:text="02:00" />
+        </LinearLayout>
+    </FrameLayout>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/infoCard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="32dp"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="4dp"
+        app:layout_constraintTop_toBottomOf="@+id/circleContainer">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:id="@+id/validityText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Kod jest ważny przez 2 minuty"
+                android:textAlignment="center"
+                android:textColor="#757575"
+                android:textSize="16sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Użyj kodu w terminalu, bankomacie lub podczas zakupów online"
+                android:textAlignment="center"
+                android:textColor="#757575"
+                android:textSize="14sp" />
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/regenerateButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="32dp"
+        android:paddingVertical="12dp"
+        android:text="Wygeneruj ponownie"
+        android:textSize="16sp"
+        android:visibility="gone"
+        app:cornerRadius="24dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/infoCard"
+        app:layout_constraintVertical_bias="0.1" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
