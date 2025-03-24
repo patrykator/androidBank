@@ -35,7 +35,6 @@ public class MainActivity extends AppCompatActivity {
     private SwipeRefreshLayout swipeRefreshLayout;
     private ProgressBar loadingProgressBar;
     private ViewPager2 accountViewPager;
-    private View viewPagerContainer;
     private AccountAdapter accountAdapter;
     private static String ACCOUNT_ID = "";
     private LinearLayout dotsIndicator;
@@ -52,7 +51,6 @@ public class MainActivity extends AppCompatActivity {
         balanceTextView = findViewById(R.id.balanceTextView);
         loadingProgressBar = findViewById(R.id.loadingProgressBar);
         accountViewPager = findViewById(R.id.accountViewPager);
-        viewPagerContainer = findViewById(R.id.viewPagerContainer);
         dotsIndicator = findViewById(R.id.dotsIndicator);
 
         accountAdapter = new AccountAdapter();
@@ -204,7 +202,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         loadingProgressBar.setVisibility(isLoading ? View.VISIBLE : View.GONE);
-        viewPagerContainer.setVisibility(isLoading ? View.GONE : View.VISIBLE);
+        accountViewPager.setVisibility(isLoading ? View.GONE : View.VISIBLE);
         dotsIndicator.setVisibility(isLoading ? View.GONE : (dots != null && dots.length > 1 ? View.VISIBLE : View.GONE));
     }
 
@@ -228,6 +226,14 @@ public class MainActivity extends AppCompatActivity {
             params.height = actionBarHeight + insets.top;
             toolbar.setLayoutParams(params);
 
+            // Dodaj padding do dolnego panelu aby zapobiec nakładaniu się na pasek nawigacji
+            View bottomActionsLayout = findViewById(R.id.bottomActionsLayout);
+            bottomActionsLayout.setPadding(
+                bottomActionsLayout.getPaddingLeft(),
+                bottomActionsLayout.getPaddingTop(),
+                bottomActionsLayout.getPaddingRight(),
+                insets.bottom + 12
+            );
 
             v.setPadding(0, 0, 0, 0);
 
