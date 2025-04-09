@@ -28,6 +28,7 @@ public class BlikActivity extends AppCompatActivity {
     private ProgressBar circleProgress;
     private CountDownTimer countDownTimer;
     private static final long BLIK_VALIDITY_MILLIS = 2 * 60 * 1000;
+//    private Integer idKonta = getIntent().getIntExtra("klientId", -1);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +82,8 @@ public class BlikActivity extends AppCompatActivity {
         showLoading(true);
 
         BankApiClient apiClient = new BankApiClient("aaaabbbccc");
+
+//        android.util.Log.d("MainActivity", "SALDO_RESPONSE: " + idKonta);
 
         apiClient.generateBlikCode(new BankApiClient.BankApiCallback() {
             @Override

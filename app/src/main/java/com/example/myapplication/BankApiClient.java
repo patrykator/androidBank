@@ -71,12 +71,12 @@ public class BankApiClient {
             RequestBody body = RequestBody.create(requestData.toString(), JSON);
 
             Request request = new Request.Builder()
-                    .url(API_BASE_URL + "platnosc/blik")
+                    .url(API_BASE_URL + "platnosc/blik" )
                     .header("Authorization", "Bearer " + apiKey)
                     .post(body)
                     .build();
 
-            Log.d(TAG, "Sending request to: " + API_BASE_URL + "platnosc/blik");
+            Log.d(TAG, "Sending request to: " + API_BASE_URL + "platnosc/blik/");
             executeRequest(request, callback);
         } catch (Exception e) {
             callback.onFailure(e);

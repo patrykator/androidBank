@@ -67,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
         Button blikButton = findViewById(R.id.blikButton);
         blikButton.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, BlikActivity.class);
+            intent.putExtra("idKonta", ACCOUNT_ID);
             startActivity(intent);
         });
 
