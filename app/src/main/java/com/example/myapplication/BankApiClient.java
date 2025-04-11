@@ -64,19 +64,22 @@ public class BankApiClient {
         executeRequest(request, callback);
     }
 
-    public void generateBlikCode(final BankApiCallback callback) {
+    public void generateBlikCode(final BankApiCallback callback, String kontoId) {
         try {
             JSONObject requestData = new JSONObject();
 
             RequestBody body = RequestBody.create(requestData.toString(), JSON);
 
+            int kontoIdInt = Integer.parseInt(kontoId);
+
+            Log.d(TAG, "Sending request to: " + API_BASE_URL + "platnosc/blik/" + kontoIdInt);
             Request request = new Request.Builder()
-                    .url(API_BASE_URL + "platnosc/blik" )
+                    .url(API_BASE_URL + "platnosc/blik/" + kontoIdInt)
                     .header("Authorization", "Bearer " + apiKey)
-                    .post(body)
+                    .get()
                     .build();
 
-            Log.d(TAG, "Sending request to: " + API_BASE_URL + "platnosc/blik/");
+
             executeRequest(request, callback);
         } catch (Exception e) {
             callback.onFailure(e);

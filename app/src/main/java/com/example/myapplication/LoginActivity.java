@@ -155,6 +155,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private void loginSuccessful(Integer klientId) {
         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+        android.util.Log.d("MainActivity", "SALDO_RESPONSE: " + klientId);
         intent.putExtra("klientId", klientId);
         startActivity(intent);
         finish();

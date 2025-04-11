@@ -47,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
         ACCOUNT_ID = String.valueOf(getIntent().getIntExtra("klientId", -1));
+        android.util.Log.d("MainActivity", "SALDO_RESPONSE2: " + ACCOUNT_ID);
 
         balanceTextView = findViewById(R.id.balanceTextView);
         loadingProgressBar = findViewById(R.id.loadingProgressBar);
@@ -66,9 +67,7 @@ public class MainActivity extends AppCompatActivity {
         
         Button blikButton = findViewById(R.id.blikButton);
         blikButton.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, BlikActivity.class);
-            intent.putExtra("idKonta", ACCOUNT_ID);
-            startActivity(intent);
+           goToBlik(ACCOUNT_ID);
         });
 
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
@@ -78,6 +77,14 @@ public class MainActivity extends AppCompatActivity {
         fetchAccountBalance();
 
         configureEdgeToEdge();
+    }
+
+    private void goToBlik(String klientId) {
+        Intent intent = new Intent(MainActivity.this, BlikActivity.class);
+        android.util.Log.d("MainActivity", "SALDO_RESPONSE: " + klientId);
+        intent.putExtra("klientId", ACCOUNT_ID);
+        startActivity(intent);
+        finish();
     }
 
     private void fetchAccountBalance() {
