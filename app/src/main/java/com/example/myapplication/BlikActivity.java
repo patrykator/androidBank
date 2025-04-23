@@ -28,7 +28,8 @@ public class BlikActivity extends AppCompatActivity {
     private ProgressBar circleProgress;
     private CountDownTimer countDownTimer;
     private static final long BLIK_VALIDITY_MILLIS = 2 * 60 * 1000;
-    private String idKonta = "";
+
+    private String idKarty = "";
 
 
 
@@ -37,7 +38,7 @@ public class BlikActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_blik);
-        idKonta = getIntent().getStringExtra("klientId");
+        idKarty = getIntent().getStringExtra("cardId");
 
         // Initialize views
         blikCodeTextView = findViewById(R.id.blikCodeTextView);
@@ -86,7 +87,7 @@ public class BlikActivity extends AppCompatActivity {
 
         BankApiClient apiClient = new BankApiClient("aaaabbbccc");
 
-        android.util.Log.d("MainActivity", "SALDO_RESPONSE3: " + idKonta);
+        android.util.Log.d("MainActivity", "SALDO_RESPONSE3: " + idKarty);
 
         apiClient.generateBlikCode(new BankApiClient.BankApiCallback() {
             @Override
@@ -134,7 +135,7 @@ public class BlikActivity extends AppCompatActivity {
                     handleError("Błąd połączenia: " + e.getMessage());
                 });
             }
-        }, idKonta);
+        }, idKarty);
     }
 
     // Pomocnicza metoda do obsługi błędów

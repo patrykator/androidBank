@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -40,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
     private LinearLayout dotsIndicator;
     private ImageView[] dots;
     private List<BigDecimal> balancess;
+    private List<String> cardIds;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -57,8 +59,7 @@ public class MainActivity extends AppCompatActivity {
 
         accountAdapter = new AccountAdapter();
         accountViewPager.setAdapter(accountAdapter);
-        
-        // Konfiguracja PageChangeCallback dla wskaźników kropkowych
+
         accountViewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageSelected(int position) {
@@ -80,90 +81,140 @@ public class MainActivity extends AppCompatActivity {
         configureEdgeToEdge();
     }
 
-    private void goToBlik(String klientId) {
+    private void goToBlik(String accountId) {
         Intent intent = new Intent(MainActivity.this, BlikActivity.class);
 
-        if (balancess != null && balancess.size() > 1) {
-            // Jeśli jest więcej niż jeden rachunek, pokaż dialog wyboru
-            showAccountSelectionDialog(intent);
-        } else {
-            // Jeśli jest tylko jeden rachunek, przejdź bezpośrednio do BlikActivity
-            android.util.Log.d("MainActivity", "SALDO_RESPONSE: " + klientId);
-            intent.putExtra("klientId", ACCOUNT_ID);
+        if (cardIds != null && cardIds.size() > 1) {
+            showCardSelectionDialog(intent);
+        } else if (cardIds != null && cardIds.size() == 1) {
+            intent.putExtra("cardId", cardIds.get(0));
             startActivity(intent);
+        } else {
+            Toast.makeText(this, "Brak dostępnych kart do płatności BLIK",
+                    Toast.LENGTH_SHORT).show();
         }
     }
 
-    private void showAccountSelectionDialog(Intent intent) {
-        androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(this);
-        builder.setTitle("Wybierz konto");
-
-        String[] accounts = new String[balancess.size()];
-        DecimalFormat df = new DecimalFormat("#,##0.00 zł");
-        for (int i = 0; i < balancess.size(); i++) {
-            accounts[i] = "Konto " + (i + 1) + ": " + df.format(balancess.get(i));
+    private void showCardSelectionDialog(Intent intent) {
+        // Sprawdź, czy obie listy (ID kart i salda) są dostępne i mają ten sam rozmiar
+        if (cardIds == null || balancess == null || cardIds.size() != balancess.size()) {
+            Toast.makeText(this, "Błąd danych kart lub sald.", Toast.LENGTH_SHORT).show();
+            return; // Nie pokazuj dialogu, jeśli dane są niespójne
         }
 
-        builder.setItems(accounts, (dialog, which) -> {
-            // Przekaż numer wybranego konta (indeks)
-            intent.putExtra("klientId", ACCOUNT_ID);
-            intent.putExtra("selectedAccountIndex", which);
-            startActivity(intent);
-        });
+        String[] cardLabels = new String[cardIds.size()];
+        DecimalFormat df = new DecimalFormat("#,##0.00"); // Formatter dla waluty
 
-        builder.setNegativeButton("Anuluj", (dialog, which) -> dialog.dismiss());
-        builder.show();
+        for (int i = 0; i < cardIds.size(); i++) {
+            BigDecimal balance = balancess.get(i); // Pobierz saldo dla odpowiedniej karty
+            String formattedBalance = df.format(balance); // Sformatuj saldo
+            // Utwórz etykietę z numerem karty i jej saldem
+            cardLabels[i] = "Karta " + (i + 1) + " (" + formattedBalance + " PLN)";
+        }
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Wybierz kartę do płatności BLIK")
+                .setItems(cardLabels, (dialog, which) -> {
+                    String selectedCardId = cardIds.get(which);
+                    intent.putExtra("cardId", selectedCardId);
+                    startActivity(intent);
+                })
+                .setNegativeButton("Anuluj", (dialog, which) -> dialog.dismiss());
+
+        builder.create().show();
     }
 
     private void fetchAccountBalance() {
         showLoading(true);
-
         BankApiClient apiClient = new BankApiClient("aaaabbbccc");
-        apiClient.getAccountBalance(ACCOUNT_ID, new BankApiClient.BankApiCallback() {
+
+        apiClient.getAccountCards(ACCOUNT_ID, new BankApiClient.BankApiCallback() {
             @Override
             public void onSuccess(String response) {
-                runOnUiThread(() -> {
-                    showLoading(false);
-                    android.util.Log.d("MainActivity", "SALDO_RESPONSE: " + response);
-                    try {
-                        if (response.trim().startsWith("[")) {
-                            JSONArray balancesArray = new JSONArray(response);
-                            List<BigDecimal> balances = new ArrayList<>();
-                            
-                            for (int i = 0; i < balancesArray.length(); i++) {
-                                BigDecimal balance = new BigDecimal(balancesArray.getString(i));
-                                balances.add(balance);
+                android.util.Log.d("MainActivity", "KARTY_RESPONSE: " + response);
+                try {
+                    if (response.trim().startsWith("[")) {
+                        JSONArray cardsArray = new JSONArray(response);
+                        cardIds = new ArrayList<>();
+
+                        for (int i = 0; i < cardsArray.length(); i++) {
+                            JSONObject card = cardsArray.getJSONObject(i);
+                            cardIds.add(card.getString("id"));
+                            android.util.Log.d("MainActivity", "KARTY: " + cardIds);
+                        }
+
+                        apiClient.getAccountBalance(ACCOUNT_ID, new BankApiClient.BankApiCallback() {
+                            @Override
+                            public void onSuccess(String response) {
+                                runOnUiThread(() -> {
+                                    showLoading(false);
+                                    android.util.Log.d("MainActivity", "SALDO_RESPONSE: " + response);
+                                    try {
+                                        if (response.trim().startsWith("[")) {
+                                            JSONArray balancesArray = new JSONArray(response);
+                                            List<BigDecimal> balances = new ArrayList<>();
+
+                                            for (int i = 0; i < balancesArray.length(); i++) {
+                                                BigDecimal balance = new BigDecimal(balancesArray.getString(i));
+                                                balances.add(balance);
+                                            }
+
+                                            balancess = balances;
+                                            accountAdapter.setAccountBalances(balances);
+
+                                            if (!balances.isEmpty()) {
+                                                accountViewPager.setVisibility(View.VISIBLE);
+                                                setupDots(balances.size());
+                                            } else {
+                                                balanceTextView.setText("Brak dostępnych kont");
+                                                balanceTextView.setVisibility(View.VISIBLE);
+                                                dotsIndicator.setVisibility(View.GONE); 
+                                            }
+
+                                        } else {
+                                            handleError("Nieprawidłowa odpowiedź z serwera (oczekiwano tablicy sald)");
+                                        }
+                                    } catch (Exception e) { 
+                                        runOnUiThread(() -> {
+                                            showLoading(false); // Ukryj wskaźnik ładowania
+                                            handleError("Błąd podczas przetwarzania danych salda: " + e.getMessage());
+                                            android.util.Log.e("MainActivity", "SALDO_ERROR: Error occurred: " + e.getMessage(), e);                                         });
+                                    }
+                                });
                             }
 
-                            balancess = balances;
-                            
-                            // Aktualizacja adaptera nowymi saldami
-                            accountAdapter.setAccountBalances(balances);
-                            
-                            // Pokazywanie ViewPager tylko jeśli są jakieś konta
-                            if (!balances.isEmpty()) {
-                                accountViewPager.setVisibility(View.VISIBLE);
-                                setupDots(balances.size());
-                            } else {
-                                balanceTextView.setText("Brak dostępnych kont");
-                                balanceTextView.setVisibility(View.VISIBLE);
-                                dotsIndicator.setVisibility(View.GONE);
+                            @Override
+                            public void onError(int code, String message) {
+                                runOnUiThread(() -> {
+                                    showLoading(false);
+                                    handleError("Błąd serwera: " + code + " - " + message);
+                                });
                             }
-                            
-                        } else {
-                            // ten kod nie powinien nigdy być wykonany ze względu na to, że backend zwraca tablicę, lecz jest to zabezpieczenie
-                            BigDecimal balance = new BigDecimal(response);
-                            List<BigDecimal> balances = new ArrayList<>();
-                            balances.add(balance);
-                            accountAdapter.setAccountBalances(balances);
-                            accountViewPager.setVisibility(View.VISIBLE);
-                            setupDots(1);
-                        }
-                    } catch (Exception e) {
-                        handleError("Błąd podczas przetwarzania danych: " + e.getMessage());
-                        android.util.Log.e("MainActivity", "SALDO_ERROR: Error occurred: " + e.getMessage());
+
+                            @Override
+                            public void onFailure(Exception e) {
+                                runOnUiThread(() -> {
+                                    showLoading(false);
+                                    handleError("Błąd połączenia: " + e.getMessage());
+                                });
+                            }
+                        });
+                    } else {
+                        throw new org.json.JSONException("Nieprawidłowa odpowiedź z serwera (oczekiwano tablicy kart)");
                     }
-                });
+                } catch (org.json.JSONException e) {
+                    runOnUiThread(() -> {
+                        showLoading(false);
+                        android.util.Log.e("MainActivity", "KARTY_JSON_ERROR: " + e.getMessage(), e);
+                        handleError("Błąd podczas przetwarzania danych kart: " + e.getMessage());
+                    });
+                } catch (Exception e) {
+                    runOnUiThread(() -> {
+                        showLoading(false);
+                        android.util.Log.e("MainActivity", "KARTY_ERROR: " + e.getMessage(), e);
+                        handleError("Błąd podczas pobierania danych kart: " + e.getMessage());
+                    });
+                }
             }
 
             @Override
@@ -184,6 +235,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     private void setupDots(int count) {
         dotsIndicator.removeAllViews();
         dots = new ImageView[count];
@@ -216,6 +268,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
     
+    @SuppressLint("UseCompatLoadingForDrawables")
     private void updateDots(int currentPosition) {
         if (dots == null) return;
         
@@ -279,3 +332,4 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 }
+

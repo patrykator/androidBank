@@ -88,6 +88,18 @@ public class BankApiClient {
         }
     }
 
+    public void getAccountCards(String accountId, final BankApiCallback callback) {
+        String url = API_BASE_URL + "konto/" + accountId + "/karty";
+        Request request = new Request.Builder()
+                .url(url)
+                .addHeader("Authorization", "Bearer " + apiKey)
+                .get()
+                .build();
+
+        executeRequest(request, callback);
+    }
+
+
     public void makeTransfer(String recipientAccount, String title, double amount,
                              String currency, final BankApiCallback callback) {
         try {
