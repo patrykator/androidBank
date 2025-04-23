@@ -39,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
     private static String ACCOUNT_ID = "";
     private LinearLayout dotsIndicator;
     private ImageView[] dots;
+    private List<BigDecimal> balancess;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -81,10 +82,37 @@ public class MainActivity extends AppCompatActivity {
 
     private void goToBlik(String klientId) {
         Intent intent = new Intent(MainActivity.this, BlikActivity.class);
-        android.util.Log.d("MainActivity", "SALDO_RESPONSE: " + klientId);
-        intent.putExtra("klientId", ACCOUNT_ID);
-        startActivity(intent);
-        finish();
+
+        if (balancess != null && balancess.size() > 1) {
+            // Jeśli jest więcej niż jeden rachunek, pokaż dialog wyboru
+            showAccountSelectionDialog(intent);
+        } else {
+            // Jeśli jest tylko jeden rachunek, przejdź bezpośrednio do BlikActivity
+            android.util.Log.d("MainActivity", "SALDO_RESPONSE: " + klientId);
+            intent.putExtra("klientId", ACCOUNT_ID);
+            startActivity(intent);
+        }
+    }
+
+    private void showAccountSelectionDialog(Intent intent) {
+        androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(this);
+        builder.setTitle("Wybierz konto");
+
+        String[] accounts = new String[balancess.size()];
+        DecimalFormat df = new DecimalFormat("#,##0.00 zł");
+        for (int i = 0; i < balancess.size(); i++) {
+            accounts[i] = "Konto " + (i + 1) + ": " + df.format(balancess.get(i));
+        }
+
+        builder.setItems(accounts, (dialog, which) -> {
+            // Przekaż numer wybranego konta (indeks)
+            intent.putExtra("klientId", ACCOUNT_ID);
+            intent.putExtra("selectedAccountIndex", which);
+            startActivity(intent);
+        });
+
+        builder.setNegativeButton("Anuluj", (dialog, which) -> dialog.dismiss());
+        builder.show();
     }
 
     private void fetchAccountBalance() {
@@ -106,6 +134,8 @@ public class MainActivity extends AppCompatActivity {
                                 BigDecimal balance = new BigDecimal(balancesArray.getString(i));
                                 balances.add(balance);
                             }
+
+                            balancess = balances;
                             
                             // Aktualizacja adaptera nowymi saldami
                             accountAdapter.setAccountBalances(balances);
