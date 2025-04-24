@@ -24,7 +24,7 @@
             android:id="@+id/accountNumberLabel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Konto 1"
+            android:text="Account 1"
             android:textColor="#FFFFFF"
             android:textSize="16sp"
             android:textStyle="bold" />

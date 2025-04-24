@@ -41,7 +41,7 @@ public class AccountAdapter extends RecyclerView.Adapter<AccountAdapter.AccountV
         DecimalFormat df = new DecimalFormat("#,##0.00");
         String formattedBalance = df.format(balance) + " PLN";
 
-        holder.accountNumberLabel.setText("Konto " + (position + 1));
+        holder.accountNumberLabel.setText("Account " + (position + 1));
         holder.accountBalanceValue.setText(formattedBalance);
     }
 

@@ -15,7 +15,7 @@
         android:background="@color/design_default_color_primary"
         android:elevation="4dp"
         app:layout_constraintTop_toTopOf="parent"
-        app:title="MójBank"
+        app:title="MyBank"
         app:titleTextAppearance="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
         app:titleTextColor="@android:color/white">
 
@@ -27,7 +27,7 @@
             android:layout_marginEnd="16dp"
             android:src="@android:drawable/ic_popup_reminder"
             android:tint="@android:color/white"
-            android:contentDescription="Powiadomienia" />
+            android:contentDescription="Notifications" />
     </androidx.appcompat.widget.Toolbar>
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -55,7 +55,7 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="16dp"
-                    android:text="Witaj w MójBank"
+                    android:text="Welcome to MyBank"
                     android:textColor="#212121"
                     android:textSize="18sp"
                     android:textStyle="bold"
@@ -63,14 +63,14 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <!-- Uproszczona sekcja kont -->
+                <!-- Simplified accounts section -->
                 <TextView
                     android:id="@+id/accountsLabelTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
-                    android:text="Twoje konta"
+                    android:text="Your accounts"
                     android:textColor="#757575"
                     android:textSize="14sp"
                     app:layout_constraintStart_toStartOf="parent"
@@ -106,7 +106,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:padding="16dp"
-                    android:text="Ładowanie..."
+                    android:text="Loading..."
                     android:textSize="20sp"
                     android:visibility="gone"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -221,7 +221,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:text="Przelew"
+                    android:text="Transfer"
                     android:textColor="#212121"
                     android:textSize="12sp" />
             </LinearLayout>
@@ -255,7 +255,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:text="Historia"
+                    android:text="History"
                     android:textColor="#212121"
                     android:textSize="12sp" />
             </LinearLayout>
@@ -289,7 +289,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:text="Więcej"
+                    android:text="More"
                     android:textColor="#212121"
                     android:textSize="12sp" />
             </LinearLayout>

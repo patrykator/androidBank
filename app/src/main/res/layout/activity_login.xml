@@ -14,7 +14,7 @@
         android:background="@color/design_default_color_primary"
         android:elevation="4dp"
         app:layout_constraintTop_toTopOf="parent"
-        app:title="MójBank - Logowanie"
+        app:title="MyBank - Login"
         app:titleTextAppearance="@style/TextAppearance.AppCompat.Medium"
         app:titleTextColor="@android:color/white" />
 
@@ -34,7 +34,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:text="Witaj w aplikacji MójBank"
+        android:text="Welcome to the MyBank app"
         android:textColor="#212121"
         android:textSize="20sp"
         android:textStyle="bold"
@@ -82,7 +82,7 @@
             android:id="@+id/passwordEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Hasło"
+            android:hint="Password"
             android:inputType="textPassword"
             android:maxLines="1" />
     </com.google.android.material.textfield.TextInputLayout>
@@ -95,7 +95,7 @@
         android:layout_marginTop="32dp"
         android:layout_marginEnd="32dp"
         android:padding="12dp"
-        android:text="Zaloguj się"
+        android:text="Log in"
         android:textSize="16sp"
         app:cornerRadius="8dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -107,7 +107,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="Zapomniałem hasła"
+        android:text="Forgot password"
         android:textColor="@color/design_default_color_primary"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

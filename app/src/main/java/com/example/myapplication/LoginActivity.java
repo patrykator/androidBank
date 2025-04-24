@@ -57,7 +57,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void displayFunctionalityNotAvailable() {
-        Toast.makeText(this, "Funkcjonalność niedostępna", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Functionality not available", Toast.LENGTH_SHORT).show();
     }
 
     private void attemptLogin() {
@@ -72,17 +72,17 @@ public class LoginActivity extends AppCompatActivity {
 
 
         if (TextUtils.isEmpty(password)) {
-            passwordLayout.setError("Hasło jest wymagane");
+            passwordLayout.setError("Password is required");
             focusView = passwordEditText;
             cancel = true;
         } else if (password.length() < 4) {
-            passwordLayout.setError("Hasło jest za krótkie");
+            passwordLayout.setError("Password is too short");
             focusView = passwordEditText;
             cancel = true;
         }
 
         if (TextUtils.isEmpty(email)) {
-            emailLayout.setError("Email jest wymagany");
+            emailLayout.setError("Email is required");
             focusView = emailEditText;
             cancel = true;
         }
@@ -113,11 +113,13 @@ public class LoginActivity extends AppCompatActivity {
                         String status = jsonResponse.optString("status", "success");
 
                         if ("error".equals(status)) {
-                            String message = jsonResponse.optString("message", "Nieznany błąd");
-                            if (message.contains("nie istnieje")) {
-                                emailLayout.setError(message);
-                            } else if (message.contains("hasło")) {
-                                passwordLayout.setError(message);
+                            String message = jsonResponse.optString("message", "Unknown error");
+                            // Note: These checks depend on the exact Polish error messages from the server.
+                            // If the server messages change, these checks might need adjustment.
+                            if (message.contains("nie istnieje")) { // "does not exist"
+                                emailLayout.setError(message); // Keep original server message for now
+                            } else if (message.contains("hasło")) { // "password"
+                                passwordLayout.setError(message); // Keep original server message for now
                             } else {
                                 Toast.makeText(LoginActivity.this, message, Toast.LENGTH_LONG).show();
                             }
@@ -126,7 +128,7 @@ public class LoginActivity extends AppCompatActivity {
                             loginSuccessful(klientId);
                         }
                     } catch (JSONException e) {
-                        Toast.makeText(LoginActivity.this, "Błąd przetwarzania odpowiedzi: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                        Toast.makeText(LoginActivity.this, "Error processing response: " + e.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 });
             }
@@ -136,9 +138,10 @@ public class LoginActivity extends AppCompatActivity {
                 runOnUiThread(() -> {
                     showProgress(false);
                     if (code == 401) {
-                        passwordLayout.setError("Nieprawidłowe hasło");
+                        // Assuming 401 specifically means invalid password based on previous Polish text
+                        passwordLayout.setError("Invalid password");
                     } else {
-                        Toast.makeText(LoginActivity.this, "Błąd serwera: " + code + " - " + message, Toast.LENGTH_LONG).show();
+                        Toast.makeText(LoginActivity.this, "Server error: " + code + " - " + message, Toast.LENGTH_LONG).show();
                     }
                 });
             }
@@ -147,7 +150,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onFailure(Exception e) {
                 runOnUiThread(() -> {
                     showProgress(false);
-                    Toast.makeText(LoginActivity.this, "Błąd logowania: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(LoginActivity.this, "Login error: " + e.getMessage(), Toast.LENGTH_LONG).show();
                 });
             }
         });

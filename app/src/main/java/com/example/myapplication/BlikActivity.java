@@ -115,7 +115,7 @@ public class BlikActivity extends AppCompatActivity {
                         startCountdownTimer(validity);
 
                     } catch (Exception e) {
-                        handleError("Błąd podczas przetwarzania odpowiedzi: " + e.getMessage());
+                        handleError("Error processing response: " + e.getMessage());
                     }
                 });
             }
@@ -124,7 +124,7 @@ public class BlikActivity extends AppCompatActivity {
             public void onError(int code, String message) {
                 runOnUiThread(() -> {
                     showLoading(false);
-                    handleError("Błąd serwera: " + code + " - " + message);
+                    handleError("Server error: " + code + " - " + message);
                 });
             }
 
@@ -132,7 +132,7 @@ public class BlikActivity extends AppCompatActivity {
             public void onFailure(Exception e) {
                 runOnUiThread(() -> {
                     showLoading(false);
-                    handleError("Błąd połączenia: " + e.getMessage());
+                    handleError("Connection error: " + e.getMessage());
                 });
             }
         }, idKarty);

@@ -90,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
             intent.putExtra("cardId", cardIds.get(0));
             startActivity(intent);
         } else {
-            Toast.makeText(this, "Brak dostępnych kart do płatności BLIK",
+            Toast.makeText(this, "No cards available for BLIK payment",
                     Toast.LENGTH_SHORT).show();
         }
     }
@@ -98,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
     private void showCardSelectionDialog(Intent intent) {
         // Sprawdź, czy obie listy (ID kart i salda) są dostępne i mają ten sam rozmiar
         if (cardIds == null || balancess == null || cardIds.size() != balancess.size()) {
-            Toast.makeText(this, "Błąd danych kart lub sald.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Card or balance data error.", Toast.LENGTH_SHORT).show();
             return; // Nie pokazuj dialogu, jeśli dane są niespójne
         }
 
@@ -109,17 +109,17 @@ public class MainActivity extends AppCompatActivity {
             BigDecimal balance = balancess.get(i); // Pobierz saldo dla odpowiedniej karty
             String formattedBalance = df.format(balance); // Sformatuj saldo
             // Utwórz etykietę z numerem karty i jej saldem
-            cardLabels[i] = "Karta " + (i + 1) + " (" + formattedBalance + " PLN)";
+            cardLabels[i] = "Card " + (i + 1) + " (" + formattedBalance + " PLN)";
         }
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Wybierz kartę do płatności BLIK")
+        builder.setTitle("Select card for BLIK payment")
                 .setItems(cardLabels, (dialog, which) -> {
                     String selectedCardId = cardIds.get(which);
                     intent.putExtra("cardId", selectedCardId);
                     startActivity(intent);
                 })
-                .setNegativeButton("Anuluj", (dialog, which) -> dialog.dismiss());
+                .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
 
         builder.create().show();
     }
@@ -166,18 +166,18 @@ public class MainActivity extends AppCompatActivity {
                                                 accountViewPager.setVisibility(View.VISIBLE);
                                                 setupDots(balances.size());
                                             } else {
-                                                balanceTextView.setText("Brak dostępnych kont");
+                                                balanceTextView.setText("No accounts available");
                                                 balanceTextView.setVisibility(View.VISIBLE);
                                                 dotsIndicator.setVisibility(View.GONE); 
                                             }
 
                                         } else {
-                                            handleError("Nieprawidłowa odpowiedź z serwera (oczekiwano tablicy sald)");
+                                            handleError("Invalid server response (expected balance array)");
                                         }
                                     } catch (Exception e) { 
                                         runOnUiThread(() -> {
                                             showLoading(false); // Ukryj wskaźnik ładowania
-                                            handleError("Błąd podczas przetwarzania danych salda: " + e.getMessage());
+                                            handleError("Error processing balance data: " + e.getMessage());
                                             android.util.Log.e("MainActivity", "SALDO_ERROR: Error occurred: " + e.getMessage(), e);                                         });
                                     }
                                 });
@@ -187,7 +187,7 @@ public class MainActivity extends AppCompatActivity {
                             public void onError(int code, String message) {
                                 runOnUiThread(() -> {
                                     showLoading(false);
-                                    handleError("Błąd serwera: " + code + " - " + message);
+                                    handleError("Server error: " + code + " - " + message);
                                 });
                             }
 
@@ -195,24 +195,24 @@ public class MainActivity extends AppCompatActivity {
                             public void onFailure(Exception e) {
                                 runOnUiThread(() -> {
                                     showLoading(false);
-                                    handleError("Błąd połączenia: " + e.getMessage());
+                                    handleError("Connection error: " + e.getMessage());
                                 });
                             }
                         });
                     } else {
-                        throw new org.json.JSONException("Nieprawidłowa odpowiedź z serwera (oczekiwano tablicy kart)");
+                        throw new org.json.JSONException("Invalid server response (expected card array)");
                     }
                 } catch (org.json.JSONException e) {
                     runOnUiThread(() -> {
                         showLoading(false);
                         android.util.Log.e("MainActivity", "KARTY_JSON_ERROR: " + e.getMessage(), e);
-                        handleError("Błąd podczas przetwarzania danych kart: " + e.getMessage());
+                        handleError("Error processing card data: " + e.getMessage());
                     });
                 } catch (Exception e) {
                     runOnUiThread(() -> {
                         showLoading(false);
                         android.util.Log.e("MainActivity", "KARTY_ERROR: " + e.getMessage(), e);
-                        handleError("Błąd podczas pobierania danych kart: " + e.getMessage());
+                        handleError("Error fetching card data: " + e.getMessage());
                     });
                 }
             }
@@ -221,7 +221,7 @@ public class MainActivity extends AppCompatActivity {
             public void onError(int code, String message) {
                 runOnUiThread(() -> {
                     showLoading(false);
-                    handleError("Błąd serwera: " + code + " - " + message);
+                    handleError("Server error: " + code + " - " + message);
                 });
             }
 
@@ -229,7 +229,7 @@ public class MainActivity extends AppCompatActivity {
             public void onFailure(Exception e) {
                 runOnUiThread(() -> {
                     showLoading(false);
-                    handleError("Błąd połączenia: " + e.getMessage());
+                    handleError("Connection error: " + e.getMessage());
                 });
             }
         });
@@ -332,4 +332,3 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 }
-
